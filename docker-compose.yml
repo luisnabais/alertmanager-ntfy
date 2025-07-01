@@ -1,12 +1,13 @@
 version: '3.8'
 
 services:
-  ntfy-webhook:
-    build: .
-    container_name: ntfy_webhook
+  alertmanager-ntfy:
+    image: luisnabais:alertmanager-ntfy:latest
+    container_name: alertmanager-ntfy
+    hostname: alertmanager-ntfy
     restart: unless-stopped
     environment:
-      - NTFY_TOPIC=teu-topico
-      - NTFY_TOKEN=teu-token
+      - NTFY_TOPIC=${NTFY_TOPIC}
+      - NTFY_TOKEN=${NTFY_TOKEN}
     ports:
       - "5000:5000"
