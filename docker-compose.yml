@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  ntfy-webhook:
+    build: .
+    container_name: ntfy_webhook
+    restart: unless-stopped
+    environment:
+      - NTFY_TOPIC=teu-topico
+      - NTFY_TOKEN=teu-token
+    ports:
+      - "5000:5000"
