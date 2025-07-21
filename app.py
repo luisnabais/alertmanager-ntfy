@@ -33,5 +33,9 @@ def alert():
     resp = requests.post(f"https://ntfy.sh/{NTFY_TOPIC}", data=summary, headers=headers)
     return ("ok", resp.status_code)
 
+@app.route("/health", methods=["GET"])
+def health():
+    return {"status": "ok"}, 200
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
