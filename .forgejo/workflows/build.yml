@@ -16,7 +16,7 @@ env:
 
 jobs:
   auto-tag:
-    runs-on: ubuntu-latest
+    runs-on: buildx
     if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'VERSION')
     steps:
       - name: Checkout code
