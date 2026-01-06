@@ -17,7 +17,7 @@ env:
 jobs:
   auto-tag:
     runs-on: ubuntu-latest
-    if: gitea.ref == 'refs/heads/main' && contains(gitea.event.head_commit.modified, 'VERSION')
+    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'VERSION')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
 
   container-build:
     runs-on: ubuntu-latest
-    if: startsWith(gitea.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,13 +48,13 @@ jobs:
       - name: Extract metadata
         id: meta
         run: |
-          TAG=${GITEA_REF#refs/tags/}
-          echo "tag=$TAG" >> $GITEA_OUTPUT
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Build and push with Docker
         run: |
-          docker login -u ${{ gitea.actor }} -p ${{ secrets.FORGEJO_TOKEN }} ${{ env.REGISTRY }}
+          docker login -u ${{ github.actor }} -p ${{ secrets.FORGEJO_TOKEN }} ${{ env.REGISTRY }}
           docker buildx build --platform ${{ env.BUILDX_PLATFORMS }} \
-            -t ${{ env.REGISTRY }}/${{ gitea.repository }}:latest \
-            -t ${{ env.REGISTRY }}/${{ gitea.repository }}:${{ steps.meta.outputs.tag }} \
+            -t ${{ env.REGISTRY }}/${{ github.repository }}:latest \
+            -t ${{ env.REGISTRY }}/${{ github.repository }}:${{ steps.meta.outputs.tag }} \
             --push .
