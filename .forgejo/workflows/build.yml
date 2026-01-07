@@ -61,6 +61,10 @@ jobs:
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
+      - name: Set up Docker Buildx
+        run: |
+          docker buildx create --use --name multiarch-builder --driver docker-container 2>/dev/null || docker buildx use multiarch-builder
+
       - name: Build and push with Docker
         run: |
           REGISTRY=$(echo "${{ github.server_url }}" | sed 's|https://||; s|http://||')
