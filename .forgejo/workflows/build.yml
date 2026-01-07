@@ -65,6 +65,11 @@ jobs:
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
+      - name: Set up Docker Buildx
+        run: |
+          docker buildx create --use --name multiarch-builder --driver docker-container || true
+          docker buildx inspect --bootstrap
+
       - name: Build and push with Docker
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.FORGEJO_TOKEN }} ${{ env.REGISTRY }}
