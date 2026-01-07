@@ -47,8 +47,13 @@ jobs:
     steps:
       - name: Checkout code
         run: |
-          git clone --depth 1 --branch ${GITHUB_REF#refs/tags/} ${{ github.server_url }}/${{ github.repository }} .
-          git fetch --tags
+          git clone ${{ github.server_url }}/${{ github.repository }} .
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG=${GITHUB_REF#refs/tags/}
+            git checkout $TAG
+          else
+            git checkout main
+          fi
 
       - name: Extract metadata
         id: meta
