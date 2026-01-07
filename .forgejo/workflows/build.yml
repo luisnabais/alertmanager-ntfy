@@ -73,3 +73,8 @@ jobs:
             -t $REGISTRY/${{ github.repository }}:latest \
             -t $REGISTRY/${{ github.repository }}:${{ steps.meta.outputs.tag }} \
             --push .
+
+      - name: Cleanup BuildX
+        if: always()
+        run: |
+          docker buildx rm multiarch-builder 2>/dev/null || true
