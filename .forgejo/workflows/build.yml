@@ -12,7 +12,6 @@ on:
 
 env:
   BUILDX_PLATFORMS: "linux/amd64,linux/arm64/v8"
-  REGISTRY: git.home.nabais.eu
 
 jobs:
   auto-tag:
@@ -71,8 +70,9 @@ jobs:
 
       - name: Build and push with Docker
         run: |
-          docker login -u ${{ github.actor }} -p ${{ secrets.FORGEJO_TOKEN }} ${{ env.REGISTRY }}
+          REGISTRY=$(echo "${{ github.server_url }}" | sed 's|https://||; s|http://||')
+          docker login -u ${{ github.actor }} -p ${{ secrets.FORGEJO_TOKEN }} $REGISTRY
           docker buildx build --platform ${{ env.BUILDX_PLATFORMS }} \
-            -t ${{ env.REGISTRY }}/${{ github.repository }}:latest \
-            -t ${{ env.REGISTRY }}/${{ github.repository }}:${{ steps.meta.outputs.tag }} \
+            -t $REGISTRY/${{ github.repository }}:latest \
+            -t $REGISTRY/${{ github.repository }}:${{ steps.meta.outputs.tag }} \
             --push .
