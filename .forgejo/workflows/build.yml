@@ -19,21 +19,23 @@ jobs:
     if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.modified, 'VERSION')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PUSH_TOKEN }}
+        run: |
+          git clone ${{ github.server_url }}/${{ github.repository }} .
+          git fetch --tags --force
+          git checkout ${{ github.sha }}
 
       - name: Create and push tag
         run: |
           VERSION=$(cat VERSION)
           echo "Version: $VERSION"
-          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+          if git rev-parse "refs/tags/$VERSION" >/dev/null 2>&1; then
             echo "Tag $VERSION already exists, workflow won't create a new tag."
             exit 0
           fi
           git config --global user.email "ci@example.com"
           git config --global user.name "CI Bot"
+          AUTH_SERVER=$(echo "${{ github.server_url }}" | sed 's|https://||; s|http://||')
+          git remote set-url origin "https://${{ github.actor }}:${{ secrets.PUSH_TOKEN }}@$AUTH_SERVER/${{ github.repository }}"
           git tag "$VERSION"
           git push origin "$VERSION"
 
