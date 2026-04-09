@@ -6,7 +6,7 @@ Script can also be executed locally or any other way, as long as dependencies ar
 
 ## Instructions
 ### Run container
-1. Set variable values (ntfy.sh topic and token) in .env file or docker-compose.yml
+1. Set variable values (ntfy.sh topic and token) in .env file or compose.yaml
 2. Execute the command: `docker-compose up -d`
 
 ### Build container
